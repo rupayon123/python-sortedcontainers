@@ -335,7 +335,12 @@ class SortedSet(MutableSet, Sequence):
         _set = self._set
         if value not in _set:
             _set.add(value)
-            self._list.add(value)
+            try:
+                self._list.add(value)
+            except BaseException:
+                # A failing key or comparison must not leave a phantom member.
+                _set.remove(value)
+                raise
 
     _add = add
 
